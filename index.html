@@ -1,0 +1,457 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Financeiro</title>
+    <link rel="icon" href="https://i.imgur.com/w0wmMt0.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .tech-gradient {
+            background: linear-gradient(90deg, #0062cc, #0097e6);
+        }
+        .logo-text {
+            background: linear-gradient(90deg, #0062cc, #00d2ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+        }
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background: linear-gradient(90deg, #0062cc, #00d2ff);
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .tech-icon {
+            filter: drop-shadow(0 0 3px rgba(0, 210, 255, 0.5));
+        }
+    </style>
+</head>
+<body>
+
+
+
+    <!-- Header -->
+        <header class="bg-gray-900 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <svg class="w-10 h-10 tech-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#00d2ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 17L12 22L22 17" stroke="#00d2ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 12L12 17L22 12" stroke="#00d2ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <div class="ml-3">
+                        <h1 class="text-2xl font-bold tracking-wider">Tekin<span class="text-cyan-400">formática</span></h1>
+                        <p class="text-gray-500 text-sm">Soluções em Tecnologia da Informação</p>
+                    </div>
+                </div>
+                <nav class="flex space-x-6">
+                    <a href="index.html" class="nav-link text-gray-800 hover:text-blue-600 font-medium"></a>
+                    <a href="formatacao.html" class="nav-link text-gray-800 hover:text-blue-600 font-medium"></a>
+                    <a href="produtos.html" class="nav-link text-gray-800 hover:text-blue-600 font-medium"></a>
+                    <a href="contato.html" class="nav-link text-gray-800 hover:text-blue-600 font-medium"></a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Dashboard Title -->
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-gray-800">Dashboard Financeiro</h2>
+            <p class="text-gray-600">Visão geral das finanças da empresa</p>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500 transition-all duration-300 card-hover">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-500 font-medium">Total de Entradas</p>
+                        <h3 class="text-2xl font-bold text-gray-800">R$ 90.964,00</h3>
+                    </div>
+                    <div class="p-3 bg-blue-100 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <span class="text-green-500 font-medium flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                        </svg>
+                        60.0% 
+                    </span>
+                    <span class="text-gray-500 text-sm">vs. saídas</span>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-red-500 transition-all duration-300 card-hover">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-500 font-medium">Total de Saídas</p>
+                        <h3 class="text-2xl font-bold text-gray-800">R$ 60.416,83</h3>
+                    </div>
+                    <div class="p-3 bg-red-100 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 12H6" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <span class="text-red-500 font-medium flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                        </svg>
+                        40.0%
+                    </span>
+                    <span class="text-gray-500 text-sm">do total</span>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-cyan-500 transition-all duration-300 card-hover">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-500 font-medium">Saldo em Caixa</p>
+                        <h3 class="text-2xl font-bold text-gray-800">R$ 30.547,17</h3>
+                    </div>
+                    <div class="p-3 bg-cyan-100 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-cyan-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <span class="text-cyan-500 font-medium flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                        </svg>
+                        33.6%
+                    </span>
+                    <span class="text-gray-500 text-sm">das entradas</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts and Tables -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Monthly Data Table -->
+            <div class="lg:col-span-2 bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">Dados Financeiros Mensais</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead>
+                            <tr>
+                                <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Período</th>
+                                <th class="px-6 py-3 bg-gray-50 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Entradas</th>
+                                <th class="px-6 py-3 bg-gray-50 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Saídas</th>
+                                <th class="px-6 py-3 bg-gray-50 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Saldo</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Dez/2024</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-green-600 font-medium">R$ 12.405,00</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-red-600 font-medium">R$ 5.805,90</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-cyan-600 font-medium">R$ 6.599,10</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Jan/2025</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-green-600 font-medium">R$ 11.040,00</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-red-600 font-medium">R$ 6.793,56</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-cyan-600 font-medium">R$ 4.246,44</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Fev/2025</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-green-600 font-medium">R$ 17.590,00</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-red-600 font-medium">R$ 13.487,93</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-cyan-600 font-medium">R$ 4.102,07</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Mar/2025</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-green-600 font-medium">R$ 20.445,00</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-red-600 font-medium">R$ 15.320,85</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-cyan-600 font-medium">R$ 5.124,15</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Abr/2025</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-green-600 font-medium">R$ 16.572,00</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-red-600 font-medium">R$ 8.955,69</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-cyan-600 font-medium">R$ 7.616,31</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Mai/2025</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-green-600 font-medium">R$ 14.664,00</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-red-600 font-medium">R$ 10.466,94</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-cyan-600 font-medium">R$ 2.859,10</td>
+                            </tr>
+                            <tr class="bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Total</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-green-600 font-bold">R$ 92.716,00</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-red-600 font-bold">R$ 60.830,87</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-cyan-600 font-bold">R$ 31.885,13</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Bar Chart -->
+                <div class="mt-8">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Comparativo Mensal</h3>
+                    <div class="h-80">
+                        <canvas id="barChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pie Chart -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">Distribuição de Receitas e Despesas</h3>
+                <div class="h-64 mb-6">
+                    <canvas id="pieChart"></canvas>
+                </div>
+                
+                <!-- Legend -->
+                <div class="mt-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 rounded-full bg-blue-500 mr-2"></div>
+                            <span class="text-sm text-gray-700">Entradas</span>
+                        </div>
+                        <span class="text-sm font-medium">R$ 90.964,00 (60.0%)</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 rounded-full bg-red-500 mr-2"></div>
+                            <span class="text-sm text-gray-700">Saídas</span>
+                        </div>
+                        <span class="text-sm font-medium">R$ 60.416,83 (40.0%)</span>
+                    </div>
+                </div>
+                
+                <!-- Additional Stats -->
+                <div class="mt-8 border-t pt-4">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-3">Estatísticas</h4>
+                    <div class="space-y-3">
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-sm font-medium text-gray-700">Média de Entradas</span>
+                                <span class="text-sm font-medium text-gray-900">R$ 15.160,67</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-blue-500 h-2 rounded-full" style="width: 60.0%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-sm font-medium text-gray-700">Média de Saídas</span>
+                                <span class="text-sm font-medium text-gray-900">R$ 10.069,47</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-red-500 h-2 rounded-full" style="width: 40.0%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-sm font-medium text-gray-700">Média de Saldo</span>
+                                <span class="text-sm font-medium text-gray-900">R$ 5.091,20</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-cyan-500 h-2 rounded-full" style="width: 33.6%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Contact Info Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+            <div class="bg-white rounded-lg shadow-md p-6 transition-all duration-300 card-hover">
+                <div class="flex items-center mb-4">
+                    <svg class="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                    </svg>
+                    <h3 class="ml-3 text-lg font-semibold text-gray-800">WhatsApp</h3>
+                </div>
+                <p class="text-gray-700 mb-4">(21) 97628-6027</p>
+                <a href="https://wa.me/5521976286027" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                    Enviar mensagem
+                </a>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6 transition-all duration-300 card-hover">
+                <div class="flex items-center mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    <h3 class="ml-3 text-lg font-semibold text-gray-800">Email</h3>
+                </div>
+                <p class="text-gray-700 mb-4">tekin.formatica@hotmail.com</p>
+                <a href="mailto:tekin.formatica@hotmail.com" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    Enviar e-mail
+                </a>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6 transition-all duration-300 card-hover">
+                <div class="flex items-center mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <h3 class="ml-3 text-lg font-semibold text-gray-800">Horário de Atendimento</h3>
+                </div>
+                <p class="text-gray-700">Segunda a Sábado</p>
+                <p class="text-gray-700 font-medium">8:00hs às 18:00hs</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white mt-12">
+        <div class="container mx-auto px-4 py-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center mb-6 md:mb-0">
+                    <svg class="w-10 h-10 tech-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#00d2ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 17L12 22L22 17" stroke="#00d2ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 12L12 17L22 12" stroke="#00d2ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <div class="ml-3">
+                        <h1 class="text-2xl font-bold tracking-wider">Tekin<span class="text-cyan-400">formática</span></h1>
+                        <p class="text-gray-400 text-sm">Soluções em Tecnologia da Informação</p>
+                    </div>
+                </div>
+                <div class="text-center md:text-right">
+                    <p class="text-gray-400">© 2011 Tekinformática - Todos os direitos reservados</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Bar Chart
+        const barCtx = document.getElementById('barChart').getContext('2d');
+        const barChart = new Chart(barCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Dez/2024', 'Jan/2025', 'Fev/2025', 'Mar/2025', 'Abr/2025', 'Mai/2025'],
+                datasets: [
+                    {
+                        label: 'Entradas',
+                        data: [12405.00, 11040.00, 17590.00, 20445.00, 16572.00, 12912.00],
+                        backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                        borderColor: 'rgb(59, 130, 246)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Saídas',
+                        data: [5805.90, 6793.56, 13487.93, 15320.85, 8955.69, 10052.90],
+                        backgroundColor: 'rgba(239, 68, 68, 0.7)',
+                        borderColor: 'rgb(239, 68, 68)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Saldo',
+                        data: [6599.10, 4246.44, 4102.07, 5124.15, 7616.31, 2859.10],
+                        backgroundColor: 'rgba(6, 182, 212, 0.7)',
+                        borderColor: 'rgb(6, 182, 212)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return 'R$ ' + value.toLocaleString('pt-BR');
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': R$ ' + context.raw.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Pie Chart
+        const pieCtx = document.getElementById('pieChart').getContext('2d');
+        const pieChart = new Chart(pieCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Entradas', 'Saídas'],
+                datasets: [{
+                    data: [90964.00, 60416.83],
+                    backgroundColor: [
+                        'rgba(59, 130, 246, 0.8)',
+                        'rgba(239, 68, 68, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgb(59, 130, 246)',
+                        'rgb(239, 68, 68)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.raw;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = Math.round((value / total) * 100);
+                                return label + ': R$ ' + value.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' (' + percentage + '%)';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'943f35b1464cdf55',t:'MTc0Nzk0NzI3Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
