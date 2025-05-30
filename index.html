@@ -1,457 +1,985 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Financeiro</title>
-    <link rel="icon" href="https://i.imgur.com/xr2g94s.png">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Dashboard Financeiro - Tekinformática</title>
+    <link rel="icon" href="https://i.imgur.com/J33W6As.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <style>
+        :root {
+            --primary: #0a4d8c;
+            --secondary: #00b8d4;
+            --dark: #1e293b;
+            --light: #f8fafc;
+        }
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
         }
-        .tech-gradient {
-            background: linear-gradient(90deg, #0062cc, #0097e6);
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
         }
-        .logo-text {
-            background: linear-gradient(90deg, #0062cc, #00d2ff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            font-weight: 700;
+        .card {
+            transition: all 0.3s ease;
         }
-        .nav-link {
-            position: relative;
-        }
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -2px;
-            left: 0;
-            background: linear-gradient(90deg, #0062cc, #00d2ff);
-            transition: width 0.3s ease;
-        }
-        .nav-link:hover::after {
-            width: 100%;
-        }
-        .card-hover:hover {
+        .card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
-        .tech-icon {
-            filter: drop-shadow(0 0 3px rgba(0, 210, 255, 0.5));
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), #1a6baf);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #0a3d70, var(--primary));
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--secondary), #00d8f5);
+            transition: all 0.3s ease;
+        }
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #00a0b7, var(--secondary));
+            transform: translateY(-2px);
+        }
+        .table-row:nth-child(even) {
+            background-color: rgba(10, 77, 140, 0.05);
+        }
+        .table-row:hover {
+            background-color: rgba(10, 77, 140, 0.1);
+        }
+        .modal {
+            transition: opacity 0.3s ease;
+        }
+        .loader {
+            border-top-color: var(--secondary);
+            -webkit-animation: spinner 1.5s linear infinite;
+            animation: spinner 1.5s linear infinite;
+        }
+        @-webkit-keyframes spinner {
+            0% { -webkit-transform: rotate(0deg); }
+            100% { -webkit-transform: rotate(360deg); }
+        }
+        @keyframes spinner {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
-<body>
-
-
-
+<body class="min-h-screen">
     <!-- Header -->
-        <header class="bg-gray-900 text-white shadow-lg">
-        <div class="container mx-auto px-4 py-4">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="flex items-center mb-4 md:mb-0">
-                    <svg class="w-10 h-10 tech-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#00d2ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M2 17L12 22L22 17" stroke="#00d2ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M2 12L12 17L22 12" stroke="#00d2ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    <div class="ml-3">
-                        <h1 class="text-2xl font-bold tracking-wider">Tekin<span class="text-cyan-400">formática</span></h1>
-                        <p class="text-gray-500 text-sm">Soluções em Tecnologia da Informação</p>
-                    </div>
+    <header class="gradient-bg text-white p-4 shadow-lg">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
+            <div class="flex items-center mb-4 md:mb-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mr-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+                </svg>
+                <h1 class="text-2xl font-bold">Tekinformática</h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span class="hidden md:inline-block">Dashboard Financeiro</span>
+                <div class="relative">
+                    <span class="text-sm bg-white bg-opacity-20 px-3 py-1 rounded-full">
+                        <span id="current-date">Hoje</span>
+                    </span>
                 </div>
-                <nav class="flex space-x-6">
-                    <a href="index.html" class="nav-link text-gray-800 hover:text-blue-600 font-medium"></a>
-                    <a href="formatacao.html" class="nav-link text-gray-800 hover:text-blue-600 font-medium"></a>
-                    <a href="produtos.html" class="nav-link text-gray-800 hover:text-blue-600 font-medium"></a>
-                    <a href="contato.html" class="nav-link text-gray-800 hover:text-blue-600 font-medium"></a>
-                </nav>
             </div>
         </div>
     </header>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-4 py-8">
-        <!-- Dashboard Title -->
-        <div class="mb-8">
-            <h2 class="text-3xl font-bold text-gray-800">Dashboard Financeiro</h2>
-            <p class="text-gray-600">Visão geral das finanças da empresa</p>
+    <main class="container mx-auto p-4 mt-6">
+        <!-- Dashboard Header -->
+        <div class="flex flex-col md:flex-row justify-between items-center mb-8">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4 md:mb-0">Dashboard Financeiro</h2>
+            <div class="flex flex-wrap gap-3">
+                <button id="btn-sync" class="btn-primary text-white px-4 py-2 rounded-lg shadow flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+                    </svg>
+                    Sincronizar Dados
+                </button>
+                <button id="btn-import" class="btn-primary text-white px-4 py-2 rounded-lg shadow flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    Importar CSV
+                </button>
+                <button id="btn-export" class="btn-secondary text-white px-4 py-2 rounded-lg shadow flex items-center" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 9.293a1 1 0 011.414 0L10 11.586l2.293-2.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                    Exportar CSV
+                </button>
+                <input type="file" id="file-input" accept=".csv" class="hidden">
+            </div>
         </div>
 
-        <!-- Summary Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500 transition-all duration-300 card-hover">
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="card bg-white p-6 rounded-xl shadow-md border-l-4 border-blue-500">
                 <div class="flex justify-between items-start">
                     <div>
-                        <p class="text-gray-500 font-medium">Total de Entradas</p>
-                        <h3 class="text-2xl font-bold text-gray-800">R$ 90.964,00</h3>
+                        <p class="text-sm text-gray-500 mb-1">Total de Entradas</p>
+                        <h3 id="total-income" class="text-2xl font-bold text-gray-800">R$ 0,00</h3>
                     </div>
-                    <div class="p-3 bg-blue-100 rounded-full">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                        </svg>
-                    </div>
-                </div>
-                <div class="mt-4">
-                    <span class="text-green-500 font-medium flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                        </svg>
-                        60.0% 
-                    </span>
-                    <span class="text-gray-500 text-sm">vs. saídas</span>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-red-500 transition-all duration-300 card-hover">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <p class="text-gray-500 font-medium">Total de Saídas</p>
-                        <h3 class="text-2xl font-bold text-gray-800">R$ 60.416,83</h3>
-                    </div>
-                    <div class="p-3 bg-red-100 rounded-full">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 12H6" />
-                        </svg>
-                    </div>
-                </div>
-                <div class="mt-4">
-                    <span class="text-red-500 font-medium flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                        </svg>
-                        40.0%
-                    </span>
-                    <span class="text-gray-500 text-sm">do total</span>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-cyan-500 transition-all duration-300 card-hover">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <p class="text-gray-500 font-medium">Saldo em Caixa</p>
-                        <h3 class="text-2xl font-bold text-gray-800">R$ 30.547,17</h3>
-                    </div>
-                    <div class="p-3 bg-cyan-100 rounded-full">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-cyan-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div class="p-2 bg-blue-100 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
                 </div>
                 <div class="mt-4">
-                    <span class="text-cyan-500 font-medium flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    <div class="flex items-center">
+                        <span id="income-trend" class="text-green-500 text-sm flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z" clip-rule="evenodd" />
+                            </svg>
+                            0%
+                        </span>
+                        <span class="text-gray-400 text-xs ml-2">em relação ao período anterior</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card bg-white p-6 rounded-xl shadow-md border-l-4 border-red-500">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-sm text-gray-500 mb-1">Total de Saídas</p>
+                        <h3 id="total-expense" class="text-2xl font-bold text-gray-800">R$ 0,00</h3>
+                    </div>
+                    <div class="p-2 bg-red-100 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        33.6%
-                    </span>
-                    <span class="text-gray-500 text-sm">das entradas</span>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="flex items-center">
+                        <span id="expense-trend" class="text-red-500 text-sm flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M12 13a1 1 0 100 2h5a1 1 0 001-1v-5a1 1 0 10-2 0v2.586l-4.293-4.293a1 1 0 00-1.414 0L8 9.586l-4.293-4.293a1 1 0 00-1.414 1.414l5 5a1 1 0 001.414 0L11 9.414 14.586 13H12z" clip-rule="evenodd" />
+                            </svg>
+                            0%
+                        </span>
+                        <span class="text-gray-400 text-xs ml-2">em relação ao período anterior</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card bg-white p-6 rounded-xl shadow-md border-l-4 border-green-500">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-sm text-gray-500 mb-1">Saldo</p>
+                        <h3 id="total-balance" class="text-2xl font-bold text-gray-800">R$ 0,00</h3>
+                    </div>
+                    <div class="p-2 bg-green-100 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="flex items-center">
+                        <span id="balance-trend" class="text-gray-500 text-sm flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                            </svg>
+                            0%
+                        </span>
+                        <span class="text-gray-400 text-xs ml-2">em relação ao período anterior</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card bg-white p-6 rounded-xl shadow-md border-l-4 border-purple-500">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-sm text-gray-500 mb-1">Registros</p>
+                        <h3 id="total-records" class="text-2xl font-bold text-gray-800">0</h3>
+                    </div>
+                    <div class="p-2 bg-purple-100 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="flex items-center">
+                        <span class="text-gray-500 text-sm">Último registro:</span>
+                        <span id="last-record-date" class="text-gray-700 text-sm ml-2">-</span>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Charts and Tables -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Monthly Data Table -->
-            <div class="lg:col-span-2 bg-white rounded-lg shadow-md p-6">
-                <h3 class="text-xl font-bold text-gray-800 mb-4">Dados Financeiros Mensais</h3>
+        <!-- Charts and Table Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Pie Chart -->
+            <div class="card bg-white p-6 rounded-xl shadow-md lg:col-span-1">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Distribuição Financeira</h3>
+                <div class="relative" style="height: 300px;">
+                    <canvas id="pieChart"></canvas>
+                </div>
+                <div class="mt-4 flex justify-center gap-4">
+                    <div class="flex items-center">
+                        <span class="w-3 h-3 bg-blue-500 rounded-full mr-2"></span>
+                        <span class="text-sm text-gray-600">Entradas</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="w-3 h-3 bg-red-500 rounded-full mr-2"></span>
+                        <span class="text-sm text-gray-600">Saídas</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="w-3 h-3 bg-green-500 rounded-full mr-2"></span>
+                        <span class="text-sm text-gray-600">Saldo</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Table -->
+            <div class="card bg-white p-6 rounded-xl shadow-md lg:col-span-2">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800">Registros Financeiros</h3>
+                    <div class="flex items-center">
+                        <div class="relative mr-2">
+                            <select id="filter-year" class="bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                                <option value="all">Todos os anos</option>
+                            </select>
+                        </div>
+                        <div class="relative">
+                            <select id="filter-month" class="bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                                <option value="all">Todos os meses</option>
+                                <option value="1">Janeiro</option>
+                                <option value="2">Fevereiro</option>
+                                <option value="3">Março</option>
+                                <option value="4">Abril</option>
+                                <option value="5">Maio</option>
+                                <option value="6">Junho</option>
+                                <option value="7">Julho</option>
+                                <option value="8">Agosto</option>
+                                <option value="9">Setembro</option>
+                                <option value="10">Outubro</option>
+                                <option value="11">Novembro</option>
+                                <option value="12">Dezembro</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200">
-                        <thead>
+                        <thead class="bg-gray-100">
                             <tr>
-                                <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Período</th>
-                                <th class="px-6 py-3 bg-gray-50 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Entradas</th>
-                                <th class="px-6 py-3 bg-gray-50 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Saídas</th>
-                                <th class="px-6 py-3 bg-gray-50 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Saldo</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mês</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ano</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Entrada (R$)</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Saída (R$)</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Saldo (R$)</th>
+                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Dez/2024</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-green-600 font-medium">R$ 12.405,00</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-red-600 font-medium">R$ 5.805,90</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-cyan-600 font-medium">R$ 6.599,10</td>
-                            </tr>
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Jan/2025</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-green-600 font-medium">R$ 11.040,00</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-red-600 font-medium">R$ 6.793,56</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-cyan-600 font-medium">R$ 4.246,44</td>
-                            </tr>
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Fev/2025</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-green-600 font-medium">R$ 17.590,00</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-red-600 font-medium">R$ 13.487,93</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-cyan-600 font-medium">R$ 4.102,07</td>
-                            </tr>
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Mar/2025</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-green-600 font-medium">R$ 20.445,00</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-red-600 font-medium">R$ 15.320,85</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-cyan-600 font-medium">R$ 5.124,15</td>
-                            </tr>
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Abr/2025</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-green-600 font-medium">R$ 16.572,00</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-red-600 font-medium">R$ 8.955,69</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-cyan-600 font-medium">R$ 7.616,31</td>
-                            </tr>
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Mai/2025</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-green-600 font-medium">R$ 14.664,00</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-red-600 font-medium">R$ 10.466,94</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-cyan-600 font-medium">R$ 2.859,10</td>
-                            </tr>
-                            <tr class="bg-gray-50">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Total</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-green-600 font-bold">R$ 92.716,00</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-red-600 font-bold">R$ 60.830,87</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-cyan-600 font-bold">R$ 31.885,13</td>
+                        <tbody id="finance-table-body" class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                                    Nenhum dado disponível. Importe um arquivo CSV para começar.
+                                </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                
-                <!-- Bar Chart -->
-                <div class="mt-8">
-                    <h3 class="text-xl font-bold text-gray-800 mb-4">Comparativo Mensal</h3>
-                    <div class="h-80">
-                        <canvas id="barChart"></canvas>
+                <div id="pagination" class="flex justify-between items-center mt-4">
+                    <div class="text-sm text-gray-500">
+                        Mostrando <span id="showing-records">0</span> de <span id="total-filtered-records">0</span> registros
+                    </div>
+                    <div class="flex space-x-2">
+                        <button id="prev-page" class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md disabled:opacity-50 disabled:cursor-not-allowed">
+                            Anterior
+                        </button>
+                        <button id="next-page" class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md disabled:opacity-50 disabled:cursor-not-allowed">
+                            Próximo
+                        </button>
                     </div>
                 </div>
-            </div>
-
-            <!-- Pie Chart -->
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <h3 class="text-xl font-bold text-gray-800 mb-4">Distribuição de Receitas e Despesas</h3>
-                <div class="h-64 mb-6">
-                    <canvas id="pieChart"></canvas>
-                </div>
-                
-                <!-- Legend -->
-                <div class="mt-6">
-                    <div class="flex items-center justify-between mb-2">
-                        <div class="flex items-center">
-                            <div class="w-4 h-4 rounded-full bg-blue-500 mr-2"></div>
-                            <span class="text-sm text-gray-700">Entradas</span>
-                        </div>
-                        <span class="text-sm font-medium">R$ 90.964,00 (60.0%)</span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <div class="w-4 h-4 rounded-full bg-red-500 mr-2"></div>
-                            <span class="text-sm text-gray-700">Saídas</span>
-                        </div>
-                        <span class="text-sm font-medium">R$ 60.416,83 (40.0%)</span>
-                    </div>
-                </div>
-                
-                <!-- Additional Stats -->
-                <div class="mt-8 border-t pt-4">
-                    <h4 class="text-lg font-semibold text-gray-800 mb-3">Estatísticas</h4>
-                    <div class="space-y-3">
-                        <div>
-                            <div class="flex justify-between mb-1">
-                                <span class="text-sm font-medium text-gray-700">Média de Entradas</span>
-                                <span class="text-sm font-medium text-gray-900">R$ 15.160,67</span>
-                            </div>
-                            <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div class="bg-blue-500 h-2 rounded-full" style="width: 60.0%"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between mb-1">
-                                <span class="text-sm font-medium text-gray-700">Média de Saídas</span>
-                                <span class="text-sm font-medium text-gray-900">R$ 10.069,47</span>
-                            </div>
-                            <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div class="bg-red-500 h-2 rounded-full" style="width: 40.0%"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between mb-1">
-                                <span class="text-sm font-medium text-gray-700">Média de Saldo</span>
-                                <span class="text-sm font-medium text-gray-900">R$ 5.091,20</span>
-                            </div>
-                            <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div class="bg-cyan-500 h-2 rounded-full" style="width: 33.6%"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Contact Info Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-            <div class="bg-white rounded-lg shadow-md p-6 transition-all duration-300 card-hover">
-                <div class="flex items-center mb-4">
-                    <svg class="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-                    </svg>
-                    <h3 class="ml-3 text-lg font-semibold text-gray-800">WhatsApp</h3>
-                </div>
-                <p class="text-gray-700 mb-4">(21) 97628-6027</p>
-                <a href="https://wa.me/5521976286027" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                    </svg>
-                    Enviar mensagem
-                </a>
-            </div>
-            
-            <div class="bg-white rounded-lg shadow-md p-6 transition-all duration-300 card-hover">
-                <div class="flex items-center mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                    <h3 class="ml-3 text-lg font-semibold text-gray-800">Email</h3>
-                </div>
-                <p class="text-gray-700 mb-4">tekin.formatica@hotmail.com</p>
-                <a href="mailto:tekin.formatica@hotmail.com" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                    Enviar e-mail
-                </a>
-            </div>
-            
-            <div class="bg-white rounded-lg shadow-md p-6 transition-all duration-300 card-hover">
-                <div class="flex items-center mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <h3 class="ml-3 text-lg font-semibold text-gray-800">Horário de Atendimento</h3>
-                </div>
-                <p class="text-gray-700">Segunda a Sábado</p>
-                <p class="text-gray-700 font-medium">8:00hs às 18:00hs</p>
             </div>
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-white mt-12">
-        <div class="container mx-auto px-4 py-8">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="flex items-center mb-6 md:mb-0">
-                    <svg class="w-10 h-10 tech-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#00d2ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M2 17L12 22L22 17" stroke="#00d2ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M2 12L12 17L22 12" stroke="#00d2ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    <div class="ml-3">
-                        <h1 class="text-2xl font-bold tracking-wider">Tekin<span class="text-cyan-400">formática</span></h1>
-                        <p class="text-gray-400 text-sm">Soluções em Tecnologia da Informação</p>
+    <!-- Edit Modal -->
+    <div id="edit-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden modal">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
+            <div class="border-b px-6 py-4">
+                <h3 class="text-lg font-semibold text-gray-800">Editar Registro</h3>
+            </div>
+            <div class="p-6">
+                <form id="edit-form">
+                    <input type="hidden" id="edit-index">
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label for="edit-month" class="block text-sm font-medium text-gray-700 mb-1">Mês</label>
+                            <select id="edit-month" class="bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                                <option value="1">Janeiro</option>
+                                <option value="2">Fevereiro</option>
+                                <option value="3">Março</option>
+                                <option value="4">Abril</option>
+                                <option value="5">Maio</option>
+                                <option value="6">Junho</option>
+                                <option value="7">Julho</option>
+                                <option value="8">Agosto</option>
+                                <option value="9">Setembro</option>
+                                <option value="10">Outubro</option>
+                                <option value="11">Novembro</option>
+                                <option value="12">Dezembro</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="edit-year" class="block text-sm font-medium text-gray-700 mb-1">Ano</label>
+                            <input type="number" id="edit-year" class="bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" min="2000" max="2100">
+                        </div>
                     </div>
-                </div>
-                <div class="text-center md:text-right">
-                    <p class="text-gray-400">© 2011 Tekinformática - Todos os direitos reservados</p>
-                </div>
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label for="edit-income" class="block text-sm font-medium text-gray-700 mb-1">Entrada (R$)</label>
+                            <input type="number" id="edit-income" class="bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" step="0.01" min="0">
+                        </div>
+                        <div>
+                            <label for="edit-expense" class="block text-sm font-medium text-gray-700 mb-1">Saída (R$)</label>
+                            <input type="number" id="edit-expense" class="bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" step="0.01" min="0">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="border-t px-6 py-4 flex justify-end space-x-3">
+                <button id="btn-cancel-edit" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
+                    Cancelar
+                </button>
+                <button id="btn-save-edit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    Salvar
+                </button>
             </div>
         </div>
-    </footer>
+    </div>
+
+    <!-- Loading Modal -->
+    <div id="loading-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden modal">
+        <div class="bg-white rounded-lg shadow-xl p-6 flex items-center">
+            <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mr-4"></div>
+            <p class="text-gray-700 font-semibold">Carregando dados...</p>
+        </div>
+    </div>
+
+    <!-- No Data Alert -->
+    <div id="no-data-alert" class="fixed bottom-4 right-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded shadow-md hidden">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-yellow-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+            </div>
+            <div class="ml-3">
+                <p class="text-sm">Nenhum dado disponível. Importe um arquivo CSV para visualizar o dashboard.</p>
+            </div>
+            <button id="close-alert" class="ml-auto -mx-1.5 -my-1.5 bg-yellow-100 text-yellow-500 rounded-lg focus:ring-2 focus:ring-yellow-400 p-1.5 hover:bg-yellow-200 inline-flex h-8 w-8">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Success Alert -->
+    <div id="success-alert" class="fixed bottom-4 right-4 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-md hidden">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+            </div>
+            <div class="ml-3">
+                <p id="success-message" class="text-sm">Dados sincronizados com sucesso!</p>
+            </div>
+            <button id="close-success" class="ml-auto -mx-1.5 -my-1.5 bg-green-100 text-green-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex h-8 w-8">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Error Alert -->
+    <div id="error-alert" class="fixed bottom-4 right-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-md hidden">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                </svg>
+            </div>
+            <div class="ml-3">
+                <p id="error-message" class="text-sm">Erro ao sincronizar dados.</p>
+            </div>
+            <button id="close-error" class="ml-auto -mx-1.5 -my-1.5 bg-red-100 text-red-500 rounded-lg focus:ring-2 focus:ring-red-400 p-1.5 hover:bg-red-200 inline-flex h-8 w-8">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
 
     <script>
-        // Bar Chart
-        const barCtx = document.getElementById('barChart').getContext('2d');
-        const barChart = new Chart(barCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Dez/2024', 'Jan/2025', 'Fev/2025', 'Mar/2025', 'Abr/2025', 'Mai/2025'],
-                datasets: [
-                    {
-                        label: 'Entradas',
-                        data: [12405.00, 11040.00, 17590.00, 20445.00, 16572.00, 12912.00],
-                        backgroundColor: 'rgba(59, 130, 246, 0.7)',
-                        borderColor: 'rgb(59, 130, 246)',
-                        borderWidth: 1
+        // Global variables
+        let financeData = [];
+        let filteredData = [];
+        let currentPage = 1;
+        const rowsPerPage = 5;
+        let pieChart = null;
+        const csvUrl = 'https://tekinf2025.github.io/graficofinanceiro/dados_financeiros.csv';
+
+        // Initialize date display
+        document.getElementById('current-date').textContent = new Date().toLocaleDateString('pt-BR', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+
+        // Show no data alert
+        document.getElementById('no-data-alert').classList.remove('hidden');
+
+        // Close alert buttons
+        document.getElementById('close-alert').addEventListener('click', function() {
+            document.getElementById('no-data-alert').classList.add('hidden');
+        });
+
+        document.getElementById('close-success').addEventListener('click', function() {
+            document.getElementById('success-alert').classList.add('hidden');
+        });
+
+        document.getElementById('close-error').addEventListener('click', function() {
+            document.getElementById('error-alert').classList.add('hidden');
+        });
+
+        // Sync data button
+        document.getElementById('btn-sync').addEventListener('click', function() {
+            syncData();
+        });
+
+        // Import CSV button
+        document.getElementById('btn-import').addEventListener('click', function() {
+            document.getElementById('file-input').click();
+        });
+
+        // File input change handler
+        document.getElementById('file-input').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                showLoadingModal();
+                Papa.parse(file, {
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: function(results) {
+                        processData(results.data);
+                        hideLoadingModal();
+                        showSuccessAlert('Dados importados com sucesso!');
                     },
-                    {
-                        label: 'Saídas',
-                        data: [5805.90, 6793.56, 13487.93, 15320.85, 8955.69, 10052.90],
-                        backgroundColor: 'rgba(239, 68, 68, 0.7)',
-                        borderColor: 'rgb(239, 68, 68)',
-                        borderWidth: 1
-                    },
-                    {
-                        label: 'Saldo',
-                        data: [6599.10, 4246.44, 4102.07, 5124.15, 7616.31, 2859.10],
-                        backgroundColor: 'rgba(6, 182, 212, 0.7)',
-                        borderColor: 'rgb(6, 182, 212)',
-                        borderWidth: 1
+                    error: function(error) {
+                        hideLoadingModal();
+                        showErrorAlert('Erro ao processar o arquivo: ' + error.message);
                     }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                return 'R$ ' + value.toLocaleString('pt-BR');
-                            }
-                        }
-                    }
-                },
-                plugins: {
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return context.dataset.label + ': R$ ' + context.raw.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-                            }
-                        }
-                    }
-                }
+                });
             }
         });
 
-        // Pie Chart
-        const pieCtx = document.getElementById('pieChart').getContext('2d');
-        const pieChart = new Chart(pieCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Entradas', 'Saídas'],
-                datasets: [{
-                    data: [90964.00, 60416.83],
-                    backgroundColor: [
-                        'rgba(59, 130, 246, 0.8)',
-                        'rgba(239, 68, 68, 0.8)'
-                    ],
-                    borderColor: [
-                        'rgb(59, 130, 246)',
-                        'rgb(239, 68, 68)'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                const label = context.label || '';
-                                const value = context.raw;
-                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                const percentage = Math.round((value / total) * 100);
-                                return label + ': R$ ' + value.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' (' + percentage + '%)';
+        // Sync data from remote CSV
+        function syncData() {
+            showLoadingModal();
+            
+            fetch(csvUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erro ao buscar o arquivo CSV');
+                    }
+                    return response.text();
+                })
+                .then(csvData => {
+                    Papa.parse(csvData, {
+                        header: true,
+                        skipEmptyLines: true,
+                        complete: function(results) {
+                            processData(results.data);
+                            hideLoadingModal();
+                            showSuccessAlert('Dados sincronizados com sucesso!');
+                        },
+                        error: function(error) {
+                            hideLoadingModal();
+                            showErrorAlert('Erro ao processar o arquivo CSV: ' + error.message);
+                        }
+                    });
+                })
+                .catch(error => {
+                    hideLoadingModal();
+                    showErrorAlert('Erro ao sincronizar dados: ' + error.message);
+                });
+        }
+
+        // Show loading modal
+        function showLoadingModal() {
+            document.getElementById('loading-modal').classList.remove('hidden');
+        }
+
+        // Hide loading modal
+        function hideLoadingModal() {
+            document.getElementById('loading-modal').classList.add('hidden');
+        }
+
+        // Show success alert
+        function showSuccessAlert(message) {
+            document.getElementById('success-message').textContent = message;
+            document.getElementById('success-alert').classList.remove('hidden');
+            
+            // Auto hide after 5 seconds
+            setTimeout(() => {
+                document.getElementById('success-alert').classList.add('hidden');
+            }, 5000);
+        }
+
+        // Show error alert
+        function showErrorAlert(message) {
+            document.getElementById('error-message').textContent = message;
+            document.getElementById('error-alert').classList.remove('hidden');
+            
+            // Auto hide after 5 seconds
+            setTimeout(() => {
+                document.getElementById('error-alert').classList.add('hidden');
+            }, 5000);
+        }
+
+        // Process imported data
+        function processData(data) {
+            financeData = data.map(item => {
+                // Convert string values to numbers
+                const month = parseInt(item.Mês || item.Mes || item.mes || item.mês);
+                const year = parseInt(item.Ano || item.ano);
+                const income = parseFloat((item.Entrada || item.entrada || '0').replace(/[^\d.,]/g, '').replace(',', '.'));
+                const expense = parseFloat((item.Saída || item.Saida || item.saída || item.saida || '0').replace(/[^\d.,]/g, '').replace(',', '.'));
+                
+                return {
+                    month: month,
+                    year: year,
+                    income: income,
+                    expense: expense,
+                    balance: income - expense
+                };
+            });
+
+            // Enable export button
+            document.getElementById('btn-export').disabled = false;
+            
+            // Hide no data alert
+            document.getElementById('no-data-alert').classList.add('hidden');
+            
+            // Update filter options
+            updateFilterOptions();
+            
+            // Apply filters and update display
+            applyFilters();
+        }
+
+        // Update filter options based on data
+        function updateFilterOptions() {
+            const yearSelect = document.getElementById('filter-year');
+            
+            // Clear existing options except the first one
+            while (yearSelect.options.length > 1) {
+                yearSelect.remove(1);
+            }
+            
+            // Get unique years from data
+            const years = [...new Set(financeData.map(item => item.year))].sort();
+            
+            // Add year options
+            years.forEach(year => {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                yearSelect.appendChild(option);
+            });
+        }
+
+        // Apply filters to data
+        function applyFilters() {
+            const yearFilter = document.getElementById('filter-year').value;
+            const monthFilter = document.getElementById('filter-month').value;
+            
+            filteredData = financeData.filter(item => {
+                if (yearFilter !== 'all' && item.year !== parseInt(yearFilter)) return false;
+                if (monthFilter !== 'all' && item.month !== parseInt(monthFilter)) return false;
+                return true;
+            });
+            
+            // Reset to first page
+            currentPage = 1;
+            
+            // Update UI
+            updateDashboard();
+            updateTable();
+            updatePieChart();
+        }
+
+        // Update dashboard stats
+        function updateDashboard() {
+            // Calculate totals
+            const totalIncome = filteredData.reduce((sum, item) => sum + item.income, 0);
+            const totalExpense = filteredData.reduce((sum, item) => sum + item.expense, 0);
+            const totalBalance = totalIncome - totalExpense;
+            
+            // Format currency
+            const formatter = new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            });
+            
+            // Update stats display
+            document.getElementById('total-income').textContent = formatter.format(totalIncome);
+            document.getElementById('total-expense').textContent = formatter.format(totalExpense);
+            document.getElementById('total-balance').textContent = formatter.format(totalBalance);
+            document.getElementById('total-records').textContent = filteredData.length;
+            
+            // Update last record date if available
+            if (filteredData.length > 0) {
+                const lastRecord = filteredData[filteredData.length - 1];
+                document.getElementById('last-record-date').textContent = `${getMonthName(lastRecord.month)}/${lastRecord.year}`;
+            } else {
+                document.getElementById('last-record-date').textContent = '-';
+            }
+            
+            // Update trends (simplified for demo)
+            document.getElementById('income-trend').innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z" clip-rule="evenodd" />
+                </svg>
+                ${totalIncome > 0 ? '+' : ''}${formatter.format(totalIncome)}
+            `;
+            
+            document.getElementById('expense-trend').innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M12 13a1 1 0 100 2h5a1 1 0 001-1v-5a1 1 0 10-2 0v2.586l-4.293-4.293a1 1 0 00-1.414 0L8 9.586l-4.293-4.293a1 1 0 00-1.414 1.414l5 5a1 1 0 001.414 0L11 9.414 14.586 13H12z" clip-rule="evenodd" />
+                </svg>
+                ${formatter.format(totalExpense)}
+            `;
+            
+            const balanceTrendElement = document.getElementById('balance-trend');
+            if (totalBalance > 0) {
+                balanceTrendElement.className = 'text-green-500 text-sm flex items-center';
+                balanceTrendElement.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z" clip-rule="evenodd" />
+                    </svg>
+                    ${formatter.format(totalBalance)}
+                `;
+            } else if (totalBalance < 0) {
+                balanceTrendElement.className = 'text-red-500 text-sm flex items-center';
+                balanceTrendElement.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M12 13a1 1 0 100 2h5a1 1 0 001-1v-5a1 1 0 10-2 0v2.586l-4.293-4.293a1 1 0 00-1.414 0L8 9.586l-4.293-4.293a1 1 0 00-1.414 1.414l5 5a1 1 0 001.414 0L11 9.414 14.586 13H12z" clip-rule="evenodd" />
+                    </svg>
+                    ${formatter.format(Math.abs(totalBalance))}
+                `;
+            } else {
+                balanceTrendElement.className = 'text-gray-500 text-sm flex items-center';
+                balanceTrendElement.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                    </svg>
+                    ${formatter.format(0)}
+                `;
+            }
+        }
+
+        // Update data table
+        function updateTable() {
+            const tableBody = document.getElementById('finance-table-body');
+            const formatter = new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            });
+            
+            // Clear table
+            tableBody.innerHTML = '';
+            
+            // Calculate pagination
+            const startIndex = (currentPage - 1) * rowsPerPage;
+            const endIndex = Math.min(startIndex + rowsPerPage, filteredData.length);
+            const paginatedData = filteredData.slice(startIndex, endIndex);
+            
+            // Update pagination info
+            document.getElementById('showing-records').textContent = filteredData.length > 0 ? 
+                `${startIndex + 1}-${endIndex}` : '0';
+            document.getElementById('total-filtered-records').textContent = filteredData.length;
+            
+            // Enable/disable pagination buttons
+            document.getElementById('prev-page').disabled = currentPage === 1;
+            document.getElementById('next-page').disabled = endIndex >= filteredData.length;
+            
+            // If no data
+            if (paginatedData.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                        Nenhum dado disponível para os filtros selecionados.
+                    </td>
+                `;
+                tableBody.appendChild(row);
+                return;
+            }
+            
+            // Add data rows
+            paginatedData.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.className = 'table-row';
+                
+                const actualIndex = startIndex + index;
+                
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${getMonthName(item.month)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${item.year}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-medium">${formatter.format(item.income)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-medium">${formatter.format(item.expense)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm ${item.balance >= 0 ? 'text-green-600' : 'text-red-600'} font-medium">${formatter.format(item.balance)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button data-index="${actualIndex}" class="edit-btn text-blue-600 hover:text-blue-900 mr-3">Editar</button>
+                        <button data-index="${actualIndex}" class="delete-btn text-red-600 hover:text-red-900">Excluir</button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+            
+            // Add event listeners to edit and delete buttons
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    openEditModal(index);
+                });
+            });
+            
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    deleteRecord(index);
+                });
+            });
+        }
+
+        // Update pie chart
+        function updatePieChart() {
+            const ctx = document.getElementById('pieChart').getContext('2d');
+            
+            // Calculate totals for chart
+            const totalIncome = filteredData.reduce((sum, item) => sum + item.income, 0);
+            const totalExpense = filteredData.reduce((sum, item) => sum + item.expense, 0);
+            const totalBalance = Math.max(0, totalIncome - totalExpense); // Only show positive balance in chart
+            
+            // Destroy existing chart if it exists
+            if (pieChart) {
+                pieChart.destroy();
+            }
+            
+            // Create new chart with balance included
+            pieChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Entradas', 'Saídas', 'Saldo'],
+                    datasets: [{
+                        data: [totalIncome, totalExpense, totalBalance],
+                        backgroundColor: ['#3b82f6', '#ef4444', '#10b981'],
+                        borderColor: ['#2563eb', '#dc2626', '#059669'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const value = context.raw;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
+                                    
+                                    const formatter = new Intl.NumberFormat('pt-BR', {
+                                        style: 'currency',
+                                        currency: 'BRL'
+                                    });
+                                    
+                                    return `${context.label}: ${formatter.format(value)} (${percentage}%)`;
+                                }
                             }
                         }
-                    }
+                    },
+                    cutout: '60%'
                 }
+            });
+        }
+
+        // Open edit modal
+        function openEditModal(index) {
+            const record = filteredData[index];
+            
+            document.getElementById('edit-index').value = index;
+            document.getElementById('edit-month').value = record.month;
+            document.getElementById('edit-year').value = record.year;
+            document.getElementById('edit-income').value = record.income;
+            document.getElementById('edit-expense').value = record.expense;
+            
+            document.getElementById('edit-modal').classList.remove('hidden');
+        }
+
+        // Close edit modal
+        function closeEditModal() {
+            document.getElementById('edit-modal').classList.add('hidden');
+        }
+
+        // Save edited record
+        function saveEditedRecord() {
+            const index = parseInt(document.getElementById('edit-index').value);
+            const record = filteredData[index];
+            
+            // Get values from form
+            const month = parseInt(document.getElementById('edit-month').value);
+            const year = parseInt(document.getElementById('edit-year').value);
+            const income = parseFloat(document.getElementById('edit-income').value);
+            const expense = parseFloat(document.getElementById('edit-expense').value);
+            
+            // Update record
+            record.month = month;
+            record.year = year;
+            record.income = income;
+            record.expense = expense;
+            record.balance = income - expense;
+            
+            // Find the original record in the full dataset
+            const originalIndex = financeData.findIndex(item => 
+                item.month === filteredData[index].month && 
+                item.year === filteredData[index].year
+            );
+            
+            if (originalIndex !== -1) {
+                financeData[originalIndex] = { ...record };
+            }
+            
+            // Close modal
+            closeEditModal();
+            
+            // Update UI
+            updateDashboard();
+            updateTable();
+            updatePieChart();
+            
+            // Show success message
+            showSuccessAlert('Registro atualizado com sucesso!');
+        }
+
+        // Delete record
+        function deleteRecord(index) {
+            if (confirm('Tem certeza que deseja excluir este registro?')) {
+                const record = filteredData[index];
+                
+                // Find and remove from the full dataset
+                const originalIndex = financeData.findIndex(item => 
+                    item.month === record.month && 
+                    item.year === record.year &&
+                    item.income === record.income &&
+                    item.expense === record.expense
+                );
+                
+                if (originalIndex !== -1) {
+                    financeData.splice(originalIndex, 1);
+                }
+                
+                // Remove from filtered data
+                filteredData.splice(index, 1);
+                
+                // Update UI
+                updateDashboard();
+                updateTable();
+                updatePieChart();
+                
+                // Show success message
+                showSuccessAlert('Registro excluído com sucesso!');
+            }
+        }
+
+        // Export data to CSV
+        document.getElementById('btn-export').addEventListener('click', function() {
+            // Create CSV content
+            let csvContent = "data:text/csv;charset=utf-8,Mês,Ano,Entrada,Saída\n";
+            
+            financeData.forEach(item => {
+                csvContent += `${item.month},${item.year},${item.income},${item.expense}\n`;
+            });
+            
+            // Create download link
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "tekinformatica_financeiro.csv");
+            document.body.appendChild(link);
+            
+            // Trigger download
+            link.click();
+            document.body.removeChild(link);
+            
+            // Show success message
+            showSuccessAlert('Dados exportados com sucesso!');
+        });
+
+        // Filter change handlers
+        document.getElementById('filter-year').addEventListener('change', applyFilters);
+        document.getElementById('filter-month').addEventListener('change', applyFilters);
+
+        // Pagination handlers
+        document.getElementById('prev-page').addEventListener('click', function() {
+            if (currentPage > 1) {
+                currentPage--;
+                updateTable();
             }
         });
+
+        document.getElementById('next-page').addEventListener('click', function() {
+            if (currentPage * rowsPerPage < filteredData.length) {
+                currentPage++;
+                updateTable();
+            }
+        });
+
+        // Edit modal handlers
+        document.getElementById('btn-cancel-edit').addEventListener('click', closeEditModal);
+        document.getElementById('btn-save-edit').addEventListener('click', saveEditedRecord);
+
+        // Helper function to get month name
+        function getMonthName(monthNumber) {
+            const months = [
+                'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+                'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+            ];
+            return months[monthNumber - 1] || '';
+        }
+
+        // Initialize the dashboard
+        updateDashboard();
+        updateTable();
+        updatePieChart();
+
+        // Auto-sync data on page load
+        window.addEventListener('load', function() {
+            syncData();
+        });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'943f35b1464cdf55',t:'MTc0Nzk0NzI3Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9481744ab7f4bdb3',t:'MTc0ODY0MTkwMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
